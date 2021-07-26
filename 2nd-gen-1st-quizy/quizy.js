@@ -109,7 +109,7 @@ for (let i = 0; i < places.length; i++) {
     };
     
     function answer_detail(i) {
-        addp_detail.textContent = `正解は「${answers[i]}」です！`
+        addp_detail.textContent = `正解は「${answers[i]}」です！`;
         document.getElementById(`answerLi${i}`).appendChild(addp_detail);
     };
     //----------------------↑↑↑ Functions 1 ↑↑↑--------------------------------------------------------
