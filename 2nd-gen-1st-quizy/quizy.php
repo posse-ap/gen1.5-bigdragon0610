@@ -1,3 +1,49 @@
 <?php
-phpinfo();
+
+try {
+    $pdo = new PDO(
+        'mysql:host=db;dbname=quizy;charset=utf8mb4',
+        'ryudai',
+        'password',
+        [
+          PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+          PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+          PDO::ATTR_EMULATE_PREPARES   => false,
+        ]
+    );
+
+    $stmt = $pdo->query("SELECT * FROM questions");
+    $places = $stmt->fetchAll();
+    $id = filter_input(INPUT_GET, 'id');
+    $place = $places[$id-1]['place'];
+    if ($place == null) {
+        $id = 1;
+        $place = '東京';
+    }
+
+} catch (PDOException $e) {
+    echo $e->getMessage() . PHP_EOL;
+    exit;
+}
+
+
 ?>
+
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ガチで<?= $place; ?>の人しか解けない！ #<?= $place; ?>の難読地名クイズ</title>
+    <link href="https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/html5resetcss/html5reset-1.6.css">
+    <link rel="stylesheet" href="quizy.css">
+</head>
+
+<body>
+    <div class="container container-wrapper">
+        <h1 id="quiz-title" class="quiz-title box-container">ガチで<?= $place; ?>の人しか解けない！ #<?= $place; ?>の難読地名クイズ</h1>
+<script src="quizy.js"></script>
+</body>
+
+</html>
