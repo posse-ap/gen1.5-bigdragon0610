@@ -15,6 +15,7 @@ try {
     $stmt = $pdo->query("SELECT * FROM questions");
     $places = $stmt->fetchAll();
     $id = filter_input(INPUT_GET, 'id');
+    // $id = $_GET['id'];
     $place = $places[$id-1]['place'];
     if ($place == null) {
         $id = 1;
