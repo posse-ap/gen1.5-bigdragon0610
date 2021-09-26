@@ -10,3 +10,11 @@ CREATE TABLE questions (
 
 INSERT INTO questions SET place='東京';
 INSERT INTO questions SET place='広島';
+
+DROP TABLE IF EXISTS choices;
+CREATE TABLE choices (
+  id INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  place_id INT NOT NULL,
+  true_false INT NOT NULL,
+  choice VARCHAR(255) NOT NULL
+);

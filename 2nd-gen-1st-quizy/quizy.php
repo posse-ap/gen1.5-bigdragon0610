@@ -1,5 +1,5 @@
 <?php
-
+phpinfo();
 try {
     $pdo = new PDO(
         'mysql:host=db;dbname=quizy;charset=utf8mb4',
@@ -22,6 +22,25 @@ try {
         $place = '東京';
     }
 
+    $choices = [];
+    $stmt = $pdo->query("SELECT choice FROM choices WHERE place_id = $id AND true_false = 1");
+    $true_choices = $stmt->fetchAll();
+    foreach($true_choices as $true_choice) {
+        $choices[][] = $true_choice["choice"];
+    }
+    
+    $stmt = $pdo->query("SELECT choice FROM choices WHERE place_id = $id AND true_false = 0");
+    $false_choices = $stmt->fetchAll();
+    $false_choices = array_chunk($false_choices, 2);
+    $i = 0;
+    foreach($false_choices as $false_choice) {
+        $choices[$i][] = $false_choice[0]["choice"];
+        $choices[$i][] = $false_choice[1]["choice"];
+        $i++;
+    }
+    print_r($choices);
+    $choices_json = json_encode($choices);
+
 } catch (PDOException $e) {
     echo $e->getMessage() . PHP_EOL;
     exit;
@@ -29,6 +48,11 @@ try {
 
 
 ?>
+
+<script>
+    var places = JSON.parse('<?php echo $choices_json; ?>');
+    console.log(places);
+</script>
 
 <!DOCTYPE html>
 <html lang="ja">
@@ -44,7 +68,7 @@ try {
 <body>
     <div class="container container-wrapper">
         <h1 id="quiz-title" class="quiz-title box-container">ガチで<?= $place; ?>の人しか解けない！ #<?= $place; ?>の難読地名クイズ</h1>
-<script src="quizy.js"></script>
+<script src="quizy.js?<?php echo date('YmdHis'); ?>"></script>
 </body>
 
 </html>
