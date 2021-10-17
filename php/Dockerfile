@@ -1,4 +1,3 @@
-FROM php:apache
-# MAINTAINER Ryudai Anada <bigdragon.06102001@gmail.com>
-COPY . /var/www/html
-EXPOSE 80
+FROM php:7.4-fpm  
+RUN apt-get update
+RUN docker-php-ext-install pdo_mysql

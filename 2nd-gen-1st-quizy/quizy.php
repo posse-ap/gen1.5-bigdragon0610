@@ -1,5 +1,4 @@
 <?php
-phpinfo();
 try {
     $pdo = new PDO(
         'mysql:host=db;dbname=quizy;charset=utf8mb4',
@@ -15,7 +14,6 @@ try {
     $stmt = $pdo->query("SELECT * FROM questions");
     $places = $stmt->fetchAll();
     $id = filter_input(INPUT_GET, 'id');
-    // $id = $_GET['id'];
     $place = $places[$id-1]['place'];
     if ($place == null) {
         $id = 1;
@@ -38,8 +36,16 @@ try {
         $choices[$i][] = $false_choice[1]["choice"];
         $i++;
     }
-    print_r($choices);
     $choices_json = json_encode($choices);
+
+    $stmt = $pdo->query("SELECT image_url FROM images WHERE place_id = $id");
+    $images = $stmt->fetchAll();
+    $i = 0;
+    foreach($images as $image) {
+        $images[$i] = $image["image_url"];
+        $i++;
+    }
+    $images_json = json_encode($images);
 
 } catch (PDOException $e) {
     echo $e->getMessage() . PHP_EOL;
@@ -51,7 +57,7 @@ try {
 
 <script>
     var places = JSON.parse('<?php echo $choices_json; ?>');
-    console.log(places);
+    var pictures = JSON.parse('<?php echo $images_json; ?>')
 </script>
 
 <!DOCTYPE html>
@@ -68,6 +74,7 @@ try {
 <body>
     <div class="container container-wrapper">
         <h1 id="quiz-title" class="quiz-title box-container">ガチで<?= $place; ?>の人しか解けない！ #<?= $place; ?>の難読地名クイズ</h1>
+    </div>
 <script src="quizy.js?<?php echo date('YmdHis'); ?>"></script>
 </body>
 
