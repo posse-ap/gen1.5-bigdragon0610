@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  mysql:
+    build:
+      context: ./db
+    ports:
+      - 3306:3306
+    volumes:
+      - ./db/var/lib/mysql:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=laravel
+      - MYSQL_USER=laravel
+      - MYSQL_PASSWORD=password
+      - MYSQL_ROOT_PASSWORD=password
+  phpfpm:
+    build:
+      context: ./app
+    volumes:
+      - ../posse-3rd-laravel-study:/work/backend
+    depends_on: ["mysql"]
+  nginx:
+    build:
+      context: ./web
+    ports:
+      - 80:80
+    volumes:
+      - ../posse-3rd-laravel-study:/work/backend
+    depends_on: ["phpfpm"]
