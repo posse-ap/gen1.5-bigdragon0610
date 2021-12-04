@@ -2,28 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Foundation\Console\Presets\React;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
 class HelloController extends Controller
 {
-    public function index() {
-
-        return <<<EOF
-        <html>
-        <head>
-        <title>Hello/Index</title>
-        <style>
-        body { font-size:16pt; color:#999; }
-        h1 { font-size:100pt; text-align:right; color:#eee;
-            margin: -40px 0px -50px 0px; }
-        </style>
-        </head>
-        <body>
-            <h1>Index</h1>
-            <p>これは、Ｈelloコントローラのindexアクションです。</p>
-        </body>
-        </html>
-        EOF;
-
-    }
+  public function index()
+  {
+    return view('hello.index', ['message'=>'Hello!']);
+  }
 }
