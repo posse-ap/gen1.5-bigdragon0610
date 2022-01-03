@@ -12,10 +12,8 @@ class HelloController extends Controller
 {
   public function index()
   {
-    $user = Auth::user();
-
     $areas = Area::all();
-    return view('quiztitle', compact('user', 'areas'));
+    return view('quiztitle', compact('areas'));
   }
   
   public function quiz($id) 

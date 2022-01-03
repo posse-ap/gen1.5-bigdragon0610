@@ -1,0 +1,15 @@
+.success {
+  color: blue;
+}
+
+.new_title {
+  padding-bottom: 20px;
+}
+
+.invisible {
+  display: none;
+}
+
+.edit_title_button {
+  cursor: pointer;
+}

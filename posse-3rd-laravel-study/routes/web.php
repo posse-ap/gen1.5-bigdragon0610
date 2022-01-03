@@ -17,6 +17,8 @@ Route::get('/', function () {
 
 Route::get('quiztitle', 'HelloController@index');
 Route::get('quizy/{id}', 'HelloController@quiz')->name('quizy')->middleware('auth');
+Route::resource('edittitle', 'EdittitleController');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
