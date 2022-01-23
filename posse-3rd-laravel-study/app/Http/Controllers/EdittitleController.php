@@ -39,7 +39,7 @@ class EdittitleController extends Controller
       $form = $request->all();
       unset($form['_token']);
       Area::create($form);
-      return redirect()->route('edittitle.index')->with('success', 'タイトル新規登録完了しました');
+      return redirect()->route('edittitle.index')->with('success', '登録完了しました');
     }
 
     /**
@@ -77,7 +77,12 @@ class EdittitleController extends Controller
         'name' => $request->name
       ];
       AREA::where('id', $id)->update($update);
-      return redirect()->route('edittitle.index')->with('success', 'タイトル編集完了しました');
+      return redirect()->route('edittitle.index')->with('success', '変更完了しました');
+    }
+
+    public function update_sort(Request $request, $id)
+    {
+      //
     }
 
     /**
@@ -89,6 +94,6 @@ class EdittitleController extends Controller
     public function destroy($id)
     {
       AREA::where('id', $id)->delete();
-      return redirect()->route('edittitle.index')->with('success', 'タイトル削除完了しました');
+      return redirect()->route('edittitle.index')->with('success', '削除完了しました');
     }
 }
