@@ -11,6 +11,7 @@
   <h1>@yield('title')</h1>
   @yield('content')
 
+  <script src="{{asset('js/bundle_edittitle.js')}}"></script>
   <script src="{{asset('js/edittitle.js')}}"></script>
 </body>
 </html>

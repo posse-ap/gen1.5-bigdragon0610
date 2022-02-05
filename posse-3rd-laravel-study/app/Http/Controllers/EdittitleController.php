@@ -80,9 +80,9 @@ class EdittitleController extends Controller
       return redirect()->route('edittitle.index')->with('success', '変更完了しました');
     }
 
-    public function update_sort(Request $request, $id)
+    public function update_sort(Request $request)
     {
-      //
+      // 
     }
 
     /**

@@ -17,14 +17,17 @@
     </form>
   </section>
 
-  <section class="all_titles">
+  <section id="all_titles" class="all_titles">
     <h2>タイトル一覧</h2>
     <table border="1">
-      <tr>
-        <th>タイトル</th>
-        <th>編集</th>
-        <th>削除</th>
-      </tr>
+      <thead>
+        <tr>
+          <th>タイトル</th>
+          <th>編集</th>
+          <th>削除</th>
+        </tr>
+      </thead>
+      <tbody>
         @foreach($areas as $area)
           <tr data-title_index="{{$loop->index}}">
             <form action="{{route('edittitle.update', $area->id)}}" method="POST">
@@ -48,6 +51,36 @@
             </td>
           </tr>
         @endforeach
+      </tbody>
     </table>
   </section>
+
+  <section>
+    <h2>タイトル並び替え</h2>
+    <button id="start_sort_button">移動</button>
+
+    <form action="{{route('edittitle.update_sort')}}" method="POST" id="sort_form" class="invisible">
+      @csrf
+      <!-- @method('PUT') -->
+      <table border="1">
+        <thead>
+          <tr>
+            <th>タイトル</th>
+          </tr>
+        </thead>
+        <tbody id="titles_tbody">
+          @foreach($areas as $area)
+            <tr>
+              <td>
+                <a href="quizy/1">{{$area->name}}の難読地名クイズ</a>
+                <input type="hidden" name="id" value="{{$area->id}}">
+              </td>
+            </tr>
+          @endforeach
+        </tbody>
+      </table>
+      <input type="submit" value="移動完了">
+    </form>
+
+  </section>  
 @endsection

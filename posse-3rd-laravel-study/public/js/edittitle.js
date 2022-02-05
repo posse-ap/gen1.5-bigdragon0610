@@ -20,3 +20,14 @@ title_button.forEach((value, i) => {
     edit_submit_button.classList.remove('invisible');
   });
 });
+
+// 移動ボタンを取得
+const start_sort_button = document.getElementById('start_sort_button');
+const sort_form = document.getElementById('sort_form');
+const all_titles = document.getElementById('all_titles');
+
+start_sort_button.addEventListener('click', () => {
+  start_sort_button.classList.add('invisible');
+  all_titles.classList.add('invisible');
+  sort_form.classList.remove('invisible');
+})
