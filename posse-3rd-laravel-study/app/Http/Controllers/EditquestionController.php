@@ -3,19 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Area;
+use App\Question;
 
-class EdittitleController extends Controller
+class EditquestionController extends Controller
 {
   /**
    * Display a listing of the resource.
    *
    * @return \Illuminate\Http\Response
    */
-  public function index()
+  public function index($id)
   {
-    $areas = Area::orderBy('sort_id')->get();
-    return view('edittitle.index', compact('areas'));
+    $questions = Question::where('area_id', $id)->get();
+    return view('editquestion.index', compact('questions', 'id'));
   }
 
   /**
@@ -25,7 +25,7 @@ class EdittitleController extends Controller
    */
   public function create()
   {
-    // 
+    //
   }
 
   /**
@@ -38,8 +38,8 @@ class EdittitleController extends Controller
   {
     $form = $request->all();
     unset($form['_token']);
-    Area::create($form);
-    return redirect()->route('edittitle.index')->with('success', '登録完了しました');
+    Question::create($form);
+    return redirect()->route('editquestion.index', ['id' => $request->area_id])->with('success', '登録完了しました');
   }
 
   /**
@@ -73,22 +73,7 @@ class EdittitleController extends Controller
    */
   public function update(Request $request, $id)
   {
-    $update = [
-      'name' => $request->name
-    ];
-    AREA::where('id', $id)->update($update);
-    return redirect()->route('edittitle.index')->with('success', '変更完了しました');
-  }
-
-  public function update_sort(Request $request)
-  {
-    $data = $request->id;
-    foreach ($data as $sort_id => $datum) {
-      $area = Area::find($datum);
-      $area->sort_id = $sort_id;
-      $area->save();
-    }
-    return redirect()->route('edittitle.index')->with('success', '移動完了しました');
+    //
   }
 
   /**
@@ -99,7 +84,6 @@ class EdittitleController extends Controller
    */
   public function destroy($id)
   {
-    AREA::where('id', $id)->delete();
-    return redirect()->route('edittitle.index')->with('success', '削除完了しました');
+    //
   }
 }

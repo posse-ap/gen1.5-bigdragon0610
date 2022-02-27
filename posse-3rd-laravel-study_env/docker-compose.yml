@@ -4,6 +4,7 @@ services:
   mysql:
     build:
       context: ./db
+    platform: linux/x86_64
     ports:
       - 3306:3306
     volumes:
@@ -23,7 +24,7 @@ services:
     build:
       context: ./web
     ports:
-      - 80:80
+      - 8080:80
     volumes:
       - ../posse-3rd-laravel-study:/work/backend
     depends_on: ["phpfpm"]

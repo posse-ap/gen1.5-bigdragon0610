@@ -13,6 +13,7 @@
     <form action="{{route('edittitle.store')}}" method="POST">
       @csrf
       <input type="text" name="name" value="{{old('name')}}">
+      <input type="hidden" name="sort_id" value="{{count($areas)}}">
       <input type="submit" value="登録">
     </form>
   </section>
@@ -34,7 +35,7 @@
               @csrf
               @method('PUT')
               <td>
-                <a href="quizy/1" id="link_title_{{$loop->index}}">{{$area->name}}の難読地名クイズ</a>
+                <a href="editquestion/{{$loop->iteration}}" id="link_title_{{$loop->index}}">{{$area->name}}の難読地名クイズ</a>
                 <div id="edit_title_{{$loop->index}}" class="invisible"><input type="text" name="name" value="{{$area->name}}">の難読地名クイズ</div>
               </td>
               <td>
@@ -72,8 +73,8 @@
           @foreach($areas as $area)
             <tr>
               <td>
-                <a href="quizy/1">{{$area->name}}の難読地名クイズ</a>
-                <input type="hidden" name="id" value="{{$area->id}}">
+                <a href="editquestion/{{$loop->iteration}}">{{$area->name}}の難読地名クイズ</a>
+                <input type="hidden" name="id[]" value="{{$area->id}}">
               </td>
             </tr>
           @endforeach

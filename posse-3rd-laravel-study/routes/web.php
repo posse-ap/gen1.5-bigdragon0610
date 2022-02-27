@@ -12,13 +12,15 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+  return view('welcome');
 });
 
 Route::get('quiztitle', 'HelloController@index');
 Route::get('quizy/{id}', 'HelloController@quiz')->name('quizy')->middleware('auth');
 Route::resource('edittitle', 'EdittitleController');
 Route::post('edittitle/update_sort', 'EdittitleController@update_sort')->name('edittitle.update_sort');
+Route::get('editquestion/{id}', 'EditquestionController@index')->name('editquestion.index');
+Route::post('editquestion/store', 'EditquestionController@store')->name('editquestion.store');
 
 Auth::routes();
 
