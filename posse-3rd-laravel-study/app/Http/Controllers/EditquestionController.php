@@ -76,7 +76,7 @@ class EditquestionController extends Controller
     $update = [
       'image_url' => $request->image_url
     ];
-    Question::where('area_id', $area_id)->where('id', $request->id)->update($update);
+    Question::where('id', $request->id)->update($update);
     return redirect()->route('editquestion.index', ['area_id' => $area_id])->with('success', '変更完了しました');
   }
 
@@ -84,7 +84,7 @@ class EditquestionController extends Controller
   {
     $data = $request->id;
     foreach ($data as $sort => $datum) {
-      $question = Question::where('area_id', $area_id)->find($datum);
+      $question = Question::find($datum);
       $question->sort = $sort;
       $question->save();
     }

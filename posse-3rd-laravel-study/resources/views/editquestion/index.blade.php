@@ -16,7 +16,7 @@
 
     <a href="{{ route('edittitle.index') }}" class="text-blue-400">戻る</a>
 
-    <section class="new_title mb-10">
+    <section class="mb-10">
         <h2 class="font-bold text-2xl mb-2 mt-3">新規登録</h2>
         <form action="{{ route('editquestion.store') }}" method="POST">
             @csrf
@@ -45,7 +45,10 @@
                 <input type="text" name="image_url" class="border-2 mb-1">
                 <input type="submit" value="編集">
             </form>
-            <img src="{{ $question->image_url }}" alt="設問画像" class="w-80 h-52 border-2 mb-2">
+            <a
+                href="{{ route('edittitle.editquestion.editchoice.index', ['edittitle' => $area_id, 'editquestion' => $question->id]) }}">
+                <img src="{{ $question->image_url }}" alt="設問画像" class="w-80 h-52 border-2 mb-2">
+            </a>
         @endforeach
     </section>
 
@@ -62,9 +65,6 @@
                 @foreach ($questions as $question)
                     <li>
                         <p>No.{{ $loop->iteration }}</p>
-                        <a href="">
-
-                        </a>
                         <img src="{{ $question->image_url }}" alt="設問画像" class="w-80 h-52 border-2 mb-2">
                         <input type="hidden" name="id[]" value="{{ $question->id }}">
                     </li>

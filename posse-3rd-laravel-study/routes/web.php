@@ -28,6 +28,8 @@ Route::prefix('editquestion')->group(function () {
   Route::delete('/delete/{area_id}', 'EditquestionController@destroy')->name('editquestion.delete');
 });
 
+Route::resource('edittitle.editquestion.editchoice', 'EditchoiceController');
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
