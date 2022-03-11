@@ -9,6 +9,7 @@ class Question extends Model
   protected $fillable = [
     'area_id',
     'image_url',
+    'sort',
   ];
 
   public function choices()

@@ -14,10 +14,12 @@ class AreasTableSeeder extends Seeder
     DB::table('areas')->truncate();
     $param = [
       [
-        'name' => '東京'
+        'name' => '東京',
+        'sort_id' => 1,
       ],
       [
-        'name' => '広島'
+        'name' => '広島',
+        'sort_id' => 2,
       ]
     ];
     DB::table('areas')->insert($param);

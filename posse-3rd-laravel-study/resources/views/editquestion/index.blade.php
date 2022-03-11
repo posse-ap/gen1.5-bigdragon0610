@@ -1,61 +1,80 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-  <title>設問編集</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+    <title>設問編集</title>
 </head>
+
 <body class="p-10">
-  @if (Session::get('success'))
-  <p class="success">{{Session::get('success')}}</p>
-  @endif
+    @if (Session::get('success'))
+        <p class="success">{{ Session::get('success') }}</p>
+    @endif
 
-  <section class="new_title">
-    <h2>新規登録</h2>
-    <form action="{{route('editquestion.store')}}" method="POST">
-      @csrf
-      <input type="text" name="image_url" value="{{old('image_url')}}" class="border-2">
-      <input type="hidden" name="area_id" value="{{$id}}">
-      <input type="submit" value="登録">
-    </form>
-  </section>
+    <a href="{{ route('edittitle.index') }}" class="text-blue-400">戻る</a>
 
-  <section id="all_questions" class="all_questions">
-    <h2 class="font-bold text-2xl mb-5">タイトル一覧</h2>
-    @foreach ($questions as $question)
-    <img src="{{$question->image_url}}" alt="設問画像" class="w-80 h-52 border-2 mb-2">
-    @endforeach
-  </section>
+    <section class="new_title mb-10">
+        <h2 class="font-bold text-2xl mb-2 mt-3">新規登録</h2>
+        <form action="{{ route('editquestion.store') }}" method="POST">
+            @csrf
+            <input type="text" name="image_url" value="{{ old('image_url') }}" class="border-2">
+            <input type="hidden" name="area_id" value="{{ $area_id }}">
+            <input type="hidden" name="sort" value="{{ count($questions) }}">
+            <input type="submit" value="登録">
+        </form>
+    </section>
 
-{{-- <section>
-  <h2>タイトル並び替え</h2>
-  <button id="start_sort_button">移動</button>
-
-  <form action="{{route('edittitle.update_sort')}}" method="POST" id="sort_form" class="invisible">
-    @csrf
-    <!-- @method('PUT') -->
-    <table border="1">
-      <thead>
-        <tr>
-          <th>タイトル</th>
-        </tr>
-      </thead>
-      <tbody id="titles_tbody">
-        @foreach($questions as $question)
-          <tr>
-            <td>
-              <a href="quizy/1">{{$question->name}}の難読地名クイズ</a>
-              <input type="hidden" name="id[]" value="{{$question->id}}">
-            </td>
-          </tr>
+    <section id="all_questions">
+        <h2 class="font-bold text-2xl mb-2 inline-block">設問一覧</h2>
+        <input type="button" id="sort_questions_button" class="bg-gray-100 inline-block font-bold" value="設問並び替えへ">
+        @foreach ($questions as $question)
+            <p>No.{{ $loop->iteration }}</p>
+            <form action="{{ route('editquestion.delete', $area_id) }}" method="POST">
+                @csrf
+                @method('DELETE')
+                <input type="hidden" name="id" value="{{ $question->id }}">
+                <input type="submit" value="削除" class="mb-1">
+            </form>
+            <form action="{{ route('editquestion.update', $area_id) }}" method="POST">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="id" value="{{ $question->id }}">
+                <input type="text" name="image_url" class="border-2 mb-1">
+                <input type="submit" value="編集">
+            </form>
+            <img src="{{ $question->image_url }}" alt="設問画像" class="w-80 h-52 border-2 mb-2">
         @endforeach
-      </tbody>
-    </table>
-    <input type="submit" value="移動完了">
-  </form>
-</section>   --}}
-  
+    </section>
+
+    <section id="sort_questions" class="hidden">
+        <form action="{{ route('editquestion.update_sort', $area_id) }}" method="POST">
+            @csrf
+            @method('PUT')
+            <h2 class="font-bold text-2xl mb-2 inline-block">設問並び替え</h2>
+            <div class="inline-block">
+                <button type="submit">移動確定</button>
+                <input type="button" id="all_questions_button" class="bg-gray-100 font-bold" value="設問一覧へ">
+            </div>
+            <ul id="sortable_questions">
+                @foreach ($questions as $question)
+                    <li>
+                        <p>No.{{ $loop->iteration }}</p>
+                        <a href="">
+
+                        </a>
+                        <img src="{{ $question->image_url }}" alt="設問画像" class="w-80 h-52 border-2 mb-2">
+                        <input type="hidden" name="id[]" value="{{ $question->id }}">
+                    </li>
+                @endforeach
+            </ul>
+        </form>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@latest/Sortable.min.js"></script>
+    <script src="{{ asset('js/editquestion.js') }}"></script>
 </body>
+
 </html>

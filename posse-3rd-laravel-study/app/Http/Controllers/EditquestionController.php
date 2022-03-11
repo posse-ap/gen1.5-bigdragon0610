@@ -12,10 +12,10 @@ class EditquestionController extends Controller
    *
    * @return \Illuminate\Http\Response
    */
-  public function index($id)
+  public function index($area_id)
   {
-    $questions = Question::where('area_id', $id)->get();
-    return view('editquestion.index', compact('questions', 'id'));
+    $questions = Question::where('area_id', $area_id)->orderBy('sort')->get();
+    return view('editquestion.index', compact('questions', 'area_id'));
   }
 
   /**
@@ -39,7 +39,7 @@ class EditquestionController extends Controller
     $form = $request->all();
     unset($form['_token']);
     Question::create($form);
-    return redirect()->route('editquestion.index', ['id' => $request->area_id])->with('success', '登録完了しました');
+    return redirect()->route('editquestion.index', ['area_id' => $request->area_id])->with('success', '登録完了しました');
   }
 
   /**
@@ -71,19 +71,36 @@ class EditquestionController extends Controller
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, $id)
+  public function update(Request $request, $area_id)
   {
-    //
+    $update = [
+      'image_url' => $request->image_url
+    ];
+    Question::where('area_id', $area_id)->where('id', $request->id)->update($update);
+    return redirect()->route('editquestion.index', ['area_id' => $area_id])->with('success', '変更完了しました');
+  }
+
+  public function update_sort(Request $request, $area_id)
+  {
+    $data = $request->id;
+    foreach ($data as $sort => $datum) {
+      $question = Question::where('area_id', $area_id)->find($datum);
+      $question->sort = $sort;
+      $question->save();
+    }
+    return redirect()->route('editquestion.index', ['area_id' => $area_id])->with('success', '移動完了しました');
   }
 
   /**
    * Remove the specified resource from storage.
-   *
+   * 
+   * @param  \Illuminate\Http\Request  $request
    * @param  int  $id
    * @return \Illuminate\Http\Response
    */
-  public function destroy($id)
+  public function destroy(Request $request, $area_id)
   {
-    //
+    Question::where('area_id', $area_id)->where('id', $request->id)->delete();
+    return redirect()->route('editquestion.index', ['area_id' => $area_id])->with('success', '削除完了しました');
   }
 }
