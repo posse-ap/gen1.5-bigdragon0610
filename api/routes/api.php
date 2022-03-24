@@ -23,5 +23,4 @@ Route::get('/hello', function () {
 
 Route::get('/', 'StudyingHourController@index');
 Route::get('/bar_chart', 'StudyingHourController@bar_chart');
-Route::get('/language', 'StudyingHourController@language');
-Route::get('/teaching_material', 'StudyingHourController@teaching_material');
+Route::get('/doughnut_chart', 'StudyingHourController@doughnut_chart');

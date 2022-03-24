@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Language;
 use App\StudyingHour;
 use Illuminate\Http\Request;
 
@@ -25,11 +26,11 @@ class StudyingHourController extends Controller
     return $monthly_studying_hours_for_each_day;
   }
 
-  public function language()
+  public function doughnut_chart()
   {
-  }
-
-  public function teaching_material()
-  {
+    return [
+      'language' => StudyingHour::getStudyingHoursForEachLanguage(),
+      'teaching_material' => StudyingHour::getStudyingHoursForEachTeachingMaterial(),
+    ];
   }
 }
