@@ -1,4 +1,5 @@
 import React, { useRef, useEffect, useState } from "react";
+import axios from "@/libs/axios";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -18,39 +19,6 @@ ChartJS.register(
   Tooltip,
   Legend
 );
-
-const studyHours = [
-  1, 3, 5, 0, 4, 2, 7, 8, 0, 3, 6, 2, 1, 3, 0, 6, 4, 2, 7, 0, 9, 3, 6, 2, 4, 7,
-  8, 0, 3, 6, 2,
-];
-const maxStudyHour = Math.max(...studyHours);
-const labels = studyHours.map(() => "");
-export const data = {
-  labels,
-  datasets: [
-    {
-      data: studyHours,
-      borderRadius: 10,
-      borderSkipped: false,
-    },
-  ],
-};
-
-function createGradient(ctx, area, height) {
-  const colorStart = "#1876BF";
-  const colorEnd = "#57D6FF";
-  let top = 0;
-  if (height > 0) {
-    top = (area.bottom / maxStudyHour) * (maxStudyHour - height);
-  }
-
-  const gradient = ctx.createLinearGradient(0, area.bottom, 0, top);
-
-  gradient.addColorStop(0, colorStart);
-  gradient.addColorStop(1, colorEnd);
-
-  return gradient;
-}
 
 const options = {
   responsive: true,
@@ -98,6 +66,22 @@ const options = {
   },
 };
 
+function createGradient(ctx, area, height, max) {
+  const colorStart = "#1876BF";
+  const colorEnd = "#57D6FF";
+  let top = 0;
+  if (height > 0) {
+    top = (area.bottom / max) * (max - height);
+  }
+
+  const gradient = ctx.createLinearGradient(0, area.bottom, 0, top);
+
+  gradient.addColorStop(0, colorStart);
+  gradient.addColorStop(1, colorEnd);
+
+  return gradient;
+}
+
 const BarChart = () => {
   const chartRef = useRef(null);
   const [chartData, setChartData] = useState({
@@ -105,22 +89,52 @@ const BarChart = () => {
   });
 
   useEffect(() => {
-    const chart = chartRef.current;
+    const fetch = async () => {
+      try {
+        const studyHours = [];
+        const res = await axios.get("/api/bar_chart");
+        for (let i = 0; i < Object.keys(res.data).length; i++) {
+          studyHours[i] = res.data[i + 1];
+        }
 
-    if (!chart) {
-      return;
-    }
-    const chartData = {
-      ...data,
-      datasets: data.datasets.map((dataset) => ({
-        ...dataset,
-        backgroundColor: function (context) {
-          return createGradient(chart.ctx, chart.chartArea, context.parsed.y);
-        },
-      })),
+        const maxStudyHour = Math.max(...studyHours);
+        const labels = studyHours.map(() => "");
+
+        const newData = {
+          labels,
+          datasets: [
+            {
+              data: studyHours,
+              borderRadius: 10,
+              borderSkipped: false,
+            },
+          ],
+        };
+        const chart = chartRef.current;
+        if (!chart) {
+          return;
+        }
+        const chartData = {
+          ...newData,
+          datasets: newData.datasets.map((dataset) => ({
+            ...dataset,
+            backgroundColor: function (context) {
+              return createGradient(
+                chart.ctx,
+                chart.chartArea,
+                context.parsed.y,
+                maxStudyHour
+              );
+            },
+          })),
+        };
+
+        setChartData(chartData);
+      } catch (e) {
+        console.error(e);
+      }
     };
-
-    setChartData(chartData);
+    fetch();
   }, []);
 
   return (
