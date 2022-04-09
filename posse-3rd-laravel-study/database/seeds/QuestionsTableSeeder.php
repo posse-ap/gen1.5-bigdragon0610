@@ -11,7 +11,6 @@ class QuestionsTableSeeder extends Seeder
    */
   public function run()
   {
-    DB::table('questions')->truncate();
     $param = [
       [
         'area_id' => 1,
