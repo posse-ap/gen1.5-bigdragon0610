@@ -13,3 +13,7 @@
 `docker exec -it <appコンテナID> php artisan migrate:refresh --seed`
 
 And you can access `http://localhost`
+
+## and then...
+
+rm -rf .
