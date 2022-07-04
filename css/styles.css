@@ -47,3 +47,11 @@ body {
 #app h1 > button {
   fload: right;
 }
+
+.button {
+  font-size: 12px;
+  margin: 0 2px;
+  padding: 2px;
+  border: 1px solid #bbb;
+  cursor: pointer;
+}

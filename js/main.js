@@ -6,6 +6,7 @@
     data: {
       newItem: "",
       todos: [],
+      editingTitles: [],
     },
     watch: {
       todos: {
@@ -23,9 +24,22 @@
         var item = {
           title: this.newItem,
           idDone: false,
+          editing: false,
         };
         this.todos.push(item);
         this.newItem = "";
+      },
+      editItem: function (index) {
+        this.editingTitles[index] = this.todos[index].title;
+        this.todos[index].editing = true;
+      },
+      saveItem: function (index) {
+        this.todos[index].editing = false;
+      },
+      cancelSaving: function (index) {
+        this.todos[index].title = this.editingTitles[index];
+        this.editingTitles[index] = "";
+        this.todos[index].editing = false;
       },
       deleteItem: function (index) {
         if (confirm("are you sure?")) {
