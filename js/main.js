@@ -137,10 +137,6 @@
       }
     }
 
-    addElement(element) {
-      this.elements.push(element);
-    }
-
     reduceBallNum() {
       this.ballNum--;
     }
