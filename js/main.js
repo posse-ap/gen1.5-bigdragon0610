@@ -30,6 +30,7 @@
 
     hide() {
       this.visible = false;
+      this.vy = 0;
     }
 
     getX() {
@@ -42,6 +43,10 @@
 
     getR() {
       return this.r;
+    }
+
+    getVY() {
+      return this.vy;
     }
 
     update() {
@@ -135,6 +140,20 @@
       for (let i = 1; i <= ballNum; i++) {
         this.elements.push(new Ball(this));
       }
+      this.cheatNum = 0;
+    }
+
+    cheat() {
+      this.cheatNum++;
+      if (this.cheatNum > 4) {
+        this.game.gameOver();
+      }
+
+      this.elements.forEach((element) => {
+        if (element.getVY() > 0) {
+          element.bounce();
+        }
+      });
     }
 
     reduceBallNum() {
@@ -237,4 +256,10 @@
   const paddle = new Paddle(canvas);
   const balls = new Balls(ballNum, canvas, paddle, game);
   new Screen(canvas, paddle, balls, game);
+
+  document.addEventListener("keydown", (e) => {
+    if (e.code === "Space") {
+      balls.cheat();
+    }
+  });
 })();
