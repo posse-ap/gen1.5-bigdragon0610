@@ -22,5 +22,5 @@ Route::get('/hello', function () {
 });
 
 Route::get('/', 'StudyingHourController@index');
-Route::get('/bar_chart', 'StudyingHourController@bar_chart');
+Route::get('/bar_chart/{year}/{month}', 'StudyingHourController@bar_chart');
 Route::get('/doughnut_chart', 'StudyingHourController@doughnut_chart');
