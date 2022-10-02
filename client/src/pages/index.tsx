@@ -21,6 +21,14 @@ type dateContextDefaultValue = {
 };
 export const DateContext = createContext<dateContextDefaultValue | null>(null);
 
+type errorContextDefaultValue = {
+  hasError: boolean;
+  setHasError: Dispatch<SetStateAction<boolean>>;
+};
+export const ErrorContext = createContext<errorContextDefaultValue | null>(
+  null
+);
+
 const Home: React.VFC = () => {
   const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
 
@@ -28,23 +36,26 @@ const Home: React.VFC = () => {
     setModalIsOpen(true);
   };
 
-  const [date, setDate] = useState(new Date());
+  const [date, setDate] = useState<Date>(new Date());
+  const [hasError, setHasError] = useState<boolean>(false);
 
   return (
     <DateContext.Provider value={{ date, setDate }}>
-      <Head>
-        <title>TOP PAGE</title>
-        <meta name='description' content='to record study time' />
-      </Head>
-      <Header />
-      <Main>
-        <LearningTimeWrapper />
-        <BarChart />
-        <DoughnutChartContainerWrapper />
-        <Pagination />
-        <RecordButton onClick={openModal} />
-      </Main>
-      <RecordModal isOpen={modalIsOpen} setIsOpen={setModalIsOpen} />
+      <ErrorContext.Provider value={{ hasError, setHasError }}>
+        <Head>
+          <title>TOP PAGE</title>
+          <meta name='description' content='to record study time' />
+        </Head>
+        <Header />
+        <Main>
+          <LearningTimeWrapper />
+          <BarChart />
+          <DoughnutChartContainerWrapper />
+          <Pagination />
+          <RecordButton onClick={openModal} />
+        </Main>
+        <RecordModal isOpen={modalIsOpen} setIsOpen={setModalIsOpen} />
+      </ErrorContext.Provider>
     </DateContext.Provider>
   );
 };

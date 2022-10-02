@@ -1,7 +1,8 @@
 import axios from "@/libs/axios";
+import { ErrorContext } from "@/pages";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { Dispatch, MouseEventHandler, useEffect, useState, VFC } from "react";
+import { Dispatch, MouseEventHandler, useContext, useState, VFC } from "react";
 import RecordButton from "../atoms/RecordButton";
 
 type Language = {
@@ -25,6 +26,8 @@ const BeforeRecordModalContent: VFC<Props> = ({
   progressStatuses,
   setCurrentProgressStatus,
 }) => {
+  const { setHasError } = useContext(ErrorContext);
+
   const [studyingDay, setStudyingDay] = useState<Date>(null);
   const [studyingHour, setStudyingHour] = useState<number>(0);
   const [usedLanguages, setUsedLanguages] = useState<Array<number>>([]);
@@ -65,7 +68,7 @@ const BeforeRecordModalContent: VFC<Props> = ({
       });
       setCurrentProgressStatus(progressStatuses[2]);
     } catch (e) {
-      setCurrentProgressStatus(progressStatuses[3]);
+      setHasError(true);
       console.log(e);
     }
   };

@@ -8,7 +8,7 @@ import React, {
   VFC,
 } from "react";
 import CloseButton from "../atoms/CloseButton";
-import Modal from "../atoms/Modal";
+import Modal from "./Modal";
 import AfterRecordModalContent from "../molecules/AfterRecordModalContent";
 import BeforeRecordModalContent from "../molecules/BeforeRecordModalContent";
 import LoadingModalContent from "../molecules/LoadingModalContent";
@@ -46,7 +46,7 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
     fetch();
   }, []);
 
-  const progressStatuses = ["beforeRecord", "loading", "afterRecord", "error"];
+  const progressStatuses = ["beforeRecord", "loading", "afterRecord"];
   const [currentProgressStatus, setCurrentProgressStatus] = useState(
     progressStatuses[0]
   );

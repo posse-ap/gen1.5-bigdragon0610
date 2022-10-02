@@ -1,4 +1,5 @@
-import { MouseEventHandler, ReactNode, VFC } from "react";
+import { ErrorContext } from "@/pages";
+import { MouseEventHandler, ReactNode, useContext, VFC } from "react";
 
 interface Props {
   children: ReactNode;
@@ -7,8 +8,10 @@ interface Props {
 }
 
 const Modal: VFC<Props> = ({ children, isOpen, closeModal }) => {
+  const { hasError } = useContext(ErrorContext);
+
   return (
-    <section className={isOpen ? "" : "hidden"}>
+    <section className={isOpen && !hasError ? "" : "hidden"}>
       <div
         className='w-screen h-screen bg-black opacity-10 fixed top-0 left-0'
         onClick={closeModal}

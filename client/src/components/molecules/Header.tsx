@@ -3,7 +3,7 @@ import Image from "next/image";
 
 const Header: React.VFC = () => {
   return (
-    <div className='flex p-5'>
+    <div className='flex h-[60px] p-5'>
       <Image
         src='/images/posselogo.jpg'
         alt='POSSE LOGO'
