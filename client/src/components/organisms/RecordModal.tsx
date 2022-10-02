@@ -87,6 +87,11 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
   };
 
   const [isAfterRecord, setIsAfterRecord] = useState(false);
+  const closeModal: MouseEventHandler = () => {
+    setIsOpen(false);
+    setIsAfterRecord(false);
+  };
+
   const AfterRecordModal: React.VFC = () => {
     return (
       <section>
@@ -109,13 +114,13 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
     <section className={isOpen ? "" : "hidden"}>
       <div
         className='w-screen h-screen bg-black opacity-10 fixed top-0 left-0'
-        onClick={() => setIsOpen(false)}
+        onClick={closeModal}
       ></div>
       <div className='w-screen h-[90vh] overflow-scroll bg-white fixed bottom-0 left-0 px-5 rounded-t-3xl'>
         <div className='text-right mt-5'>
           <button
             className='w-8 h-8 bg-[#f5f5f8] rounded-full'
-            onClick={() => setIsOpen(false)}
+            onClick={closeModal}
           >
             <FontAwesomeIcon icon={faClose} className='text-[#666666]' />
           </button>
