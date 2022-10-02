@@ -18,7 +18,6 @@ const Hello: NextPage = () => {
     const fetch = async () => {
       try {
         const res = await axios.get("/api/bar_chart");
-        console.log(res.data);
         setData(res.data);
       } catch (e) {
         console.error(e);
