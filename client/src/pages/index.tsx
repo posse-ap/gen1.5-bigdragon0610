@@ -13,6 +13,7 @@ import {
   SetStateAction,
   useState,
 } from "react";
+import RecordModal from "@/components/organisms/RecordModal";
 
 type dateContextDefaultValue = {
   date: Date;
@@ -21,8 +22,10 @@ type dateContextDefaultValue = {
 export const DateContext = createContext<dateContextDefaultValue | null>(null);
 
 const Home: React.VFC = () => {
+  const [modalIsOpen, setModalIsOpen] = useState<boolean>(false);
+
   const openModal: MouseEventHandler = () => {
-    alert("open modal");
+    setModalIsOpen(true);
   };
 
   const [date, setDate] = useState(new Date());
@@ -41,6 +44,7 @@ const Home: React.VFC = () => {
         <Pagination />
         <RecordButton onClick={openModal} />
       </Main>
+      <RecordModal isOpen={modalIsOpen} setIsOpen={setModalIsOpen} />
     </DateContext.Provider>
   );
 };
