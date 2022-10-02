@@ -73,12 +73,36 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
       alert("学習言語を1つ以上選択して下さい");
       return;
     }
-    const res = await axios.post("/api", {
-      studyingDay: studyingDay,
-      studyingHour: studyingHour,
-      languages: usedLanguages,
-      teachingMaterials: usedTeachingMaterials,
-    });
+    try {
+      const res = await axios.post("/api", {
+        studyingDay: studyingDay,
+        studyingHour: studyingHour,
+        languages: usedLanguages,
+        teachingMaterials: usedTeachingMaterials,
+      });
+      setIsAfterRecord(true);
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const [isAfterRecord, setIsAfterRecord] = useState(false);
+  const AfterRecordModal: React.VFC = () => {
+    return (
+      <section>
+        <div className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2'>
+          <p className='text-[#bde360] text-center text-lg'>AWESOME!</p>
+          <p className='mx-auto mt-2 peer-checked:bg-[#0f71bd] w-20 h-20 flex justify-center items-center bg-[#bde360] rounded-full'>
+            <FontAwesomeIcon icon={faCheck} className='text-white w-10 h-10' />
+          </p>
+          <p className='text-center mt-8 text-xl'>
+            記録・投稿
+            <br />
+            完了しました
+          </p>
+        </div>
+      </section>
+    );
   };
 
   return (
@@ -96,118 +120,126 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
             <FontAwesomeIcon icon={faClose} className='text-[#666666]' />
           </button>
         </div>
-        <div>
-          <label htmlFor='studying-day' className='font-bold text-xs'>
-            学習日
-          </label>
-          <input
-            type='date'
-            id='studying-day'
-            name='studying-day'
-            className='w-full bg-[#F5F5F8] h-10 px-5 mt-3'
-            onChange={(e) => setStudyingDay(new Date(e.target.value))}
-          />
-        </div>
-        <div className='mt-6'>
-          <p className='font-bold text-xs mb-3'>学習コンテンツ(複数選択可)</p>
-          <div className='flex flex-wrap gap-2'>
-            {teachingMaterials.map((teachingMaterial) => {
-              return (
-                <label className='relative' key={teachingMaterial.id}>
-                  <input
-                    type='checkbox'
-                    value={teachingMaterial.id}
-                    className='hidden peer'
-                    onChange={(e) =>
-                      setUsedTeachingMaterials((prev) => {
-                        return addOrRemove(
-                          prev,
-                          Number(e.target.value),
-                          e.target.checked
-                        );
-                      })
-                    }
-                  />
-                  <p className='peer-checked:bg-[#0f71bd] absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 leading-4 bg-[#cccccc] rounded-full text-center inline-block'>
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      className='text-white w-3'
-                    />
-                  </p>
-                  <p className='peer-checked:bg-[#e7f5ff] bg-[#F5F5F8] text-sm pr-3 pl-8 py-1 rounded-full'>
-                    {teachingMaterial.name}
-                  </p>
-                </label>
-              );
-            })}
-          </div>
-        </div>
-        <div className='mt-6'>
-          <p className='font-bold text-xs mb-3'>学習言語(複数選択可)</p>
-          <div className='flex flex-wrap gap-2'>
-            {languages.map((language) => {
-              return (
-                <label className='relative' key={language.id}>
-                  <input
-                    type='checkbox'
-                    value={language.id}
-                    className='hidden peer'
-                    onChange={(e) =>
-                      setUsedLanguages((prev) => {
-                        return addOrRemove(
-                          prev,
-                          Number(e.target.value),
-                          e.target.checked
-                        );
-                      })
-                    }
-                  />
-                  <p className='peer-checked:bg-[#0f71bd] absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 leading-4 bg-[#cccccc] rounded-full text-center inline-block'>
-                    <FontAwesomeIcon
-                      icon={faCheck}
-                      className='text-white w-3'
-                    />
-                  </p>
-                  <p className='peer-checked:bg-[#e7f5ff] bg-[#F5F5F8] text-sm pr-3 pl-8 py-1 rounded-full'>
-                    {language.name}
-                  </p>
-                </label>
-              );
-            })}
-          </div>
-        </div>
-        <div className='mt-6'>
-          <label htmlFor='studying-hour' className='font-bold text-xs'>
-            学習時間
-          </label>
-          <input
-            type='number'
-            id='studying-hour'
-            name='studying-hour'
-            className='w-full bg-[#F5F5F8] h-10 px-5 mt-3'
-            onChange={(e) => setStudyingHour(Number(e.target.value))}
-          />
-        </div>
-        <div className='mt-6'>
-          <label htmlFor='twitter' className='font-bold text-xs'>
-            Twitter用コメント
-          </label>
-          <textarea
-            id='twitter'
-            name='twitter'
-            className='w-full bg-[#F5F5F8] h-24 px-5 mt-3 resize-none'
-          ></textarea>
-        </div>
-        <div className='mt-3'>
-          <label>
-            <input type='checkbox' name='twitter' className='peer hidden' />
-            <p className='peer-checked:bg-[#0f71bd] bg-[#cccccc] mr-2 w-8 h-8 leading-8 rounded-full text-center inline-block'>
-              <FontAwesomeIcon icon={faCheck} className='text-white w-4' />
-            </p>
-            <p className='inline text-xs font-bold'>Twitterにシェアする</p>
-          </label>
-        </div>
-        <RecordButton onClick={recordStudyingHour} />
+        {isAfterRecord ? (
+          <AfterRecordModal />
+        ) : (
+          <section>
+            <div>
+              <label htmlFor='studying-day' className='font-bold text-xs'>
+                学習日
+              </label>
+              <input
+                type='date'
+                id='studying-day'
+                name='studying-day'
+                className='w-full bg-[#F5F5F8] h-10 px-5 mt-3'
+                onChange={(e) => setStudyingDay(new Date(e.target.value))}
+              />
+            </div>
+            <div className='mt-6'>
+              <p className='font-bold text-xs mb-3'>
+                学習コンテンツ(複数選択可)
+              </p>
+              <div className='flex flex-wrap gap-2'>
+                {teachingMaterials.map((teachingMaterial) => {
+                  return (
+                    <label className='relative' key={teachingMaterial.id}>
+                      <input
+                        type='checkbox'
+                        value={teachingMaterial.id}
+                        className='hidden peer'
+                        onChange={(e) =>
+                          setUsedTeachingMaterials((prev) => {
+                            return addOrRemove(
+                              prev,
+                              Number(e.target.value),
+                              e.target.checked
+                            );
+                          })
+                        }
+                      />
+                      <p className='peer-checked:bg-[#0f71bd] absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 leading-4 bg-[#cccccc] rounded-full text-center inline-block'>
+                        <FontAwesomeIcon
+                          icon={faCheck}
+                          className='text-white w-3'
+                        />
+                      </p>
+                      <p className='peer-checked:bg-[#e7f5ff] bg-[#F5F5F8] text-sm pr-3 pl-8 py-1 rounded-full'>
+                        {teachingMaterial.name}
+                      </p>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+            <div className='mt-6'>
+              <p className='font-bold text-xs mb-3'>学習言語(複数選択可)</p>
+              <div className='flex flex-wrap gap-2'>
+                {languages.map((language) => {
+                  return (
+                    <label className='relative' key={language.id}>
+                      <input
+                        type='checkbox'
+                        value={language.id}
+                        className='hidden peer'
+                        onChange={(e) =>
+                          setUsedLanguages((prev) => {
+                            return addOrRemove(
+                              prev,
+                              Number(e.target.value),
+                              e.target.checked
+                            );
+                          })
+                        }
+                      />
+                      <p className='peer-checked:bg-[#0f71bd] absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 leading-4 bg-[#cccccc] rounded-full text-center inline-block'>
+                        <FontAwesomeIcon
+                          icon={faCheck}
+                          className='text-white w-3'
+                        />
+                      </p>
+                      <p className='peer-checked:bg-[#e7f5ff] bg-[#F5F5F8] text-sm pr-3 pl-8 py-1 rounded-full'>
+                        {language.name}
+                      </p>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+            <div className='mt-6'>
+              <label htmlFor='studying-hour' className='font-bold text-xs'>
+                学習時間
+              </label>
+              <input
+                type='number'
+                id='studying-hour'
+                name='studying-hour'
+                className='w-full bg-[#F5F5F8] h-10 px-5 mt-3'
+                onChange={(e) => setStudyingHour(Number(e.target.value))}
+              />
+            </div>
+            <div className='mt-6'>
+              <label htmlFor='twitter' className='font-bold text-xs'>
+                Twitter用コメント
+              </label>
+              <textarea
+                id='twitter'
+                name='twitter'
+                className='w-full bg-[#F5F5F8] h-24 px-5 mt-3 resize-none'
+              ></textarea>
+            </div>
+            <div className='mt-3'>
+              <label>
+                <input type='checkbox' name='twitter' className='peer hidden' />
+                <p className='peer-checked:bg-[#0f71bd] bg-[#cccccc] mr-2 w-8 h-8 leading-8 rounded-full text-center inline-block'>
+                  <FontAwesomeIcon icon={faCheck} className='text-white w-4' />
+                </p>
+                <p className='inline text-xs font-bold'>Twitterにシェアする</p>
+              </label>
+            </div>
+            <RecordButton onClick={recordStudyingHour} />
+          </section>
+        )}
       </div>
     </section>
   );
