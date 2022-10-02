@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef, useEffect, useState, useContext } from "react";
 import axios from "@/libs/axios";
 import {
   Chart as ChartJS,
@@ -10,6 +10,7 @@ import {
   Legend,
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
+import { DateContext } from "@/pages";
 
 ChartJS.register(
   CategoryScale,
@@ -88,11 +89,16 @@ const BarChart = () => {
     datasets: [],
   });
 
+  const { date } = useContext(DateContext);
+
   useEffect(() => {
     const fetch = async () => {
       try {
         const studyHours = [];
-        const res = await axios.get("/api/bar_chart");
+        const currentDate = date;
+        const year = currentDate.getFullYear();
+        const month = currentDate.getMonth() + 1;
+        const res = await axios.get(`/api/bar_chart/${year}/${month}`);
         for (let i = 0; i < Object.keys(res.data).length; i++) {
           studyHours[i] = res.data[i + 1];
         }
@@ -135,10 +141,10 @@ const BarChart = () => {
       }
     };
     fetch();
-  }, []);
+  }, [date]);
 
   return (
-    <div className="bg-white rounded-xl px-2 shadow-md">
+    <div className='bg-white rounded-xl px-2 shadow-md'>
       <Bar options={options} ref={chartRef} data={chartData} />
     </div>
   );
