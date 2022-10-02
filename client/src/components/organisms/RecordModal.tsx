@@ -1,5 +1,5 @@
 import axios from "@/libs/axios";
-import { faCheck, faClose, faXmark } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faClose } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import React, {
   Dispatch,
@@ -16,10 +16,6 @@ interface Props {
 }
 
 const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
-  const record: MouseEventHandler = () => {
-    alert("record");
-  };
-
   type Language = {
     id: number;
     name: string;
@@ -47,6 +43,44 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
     fetch();
   }, []);
 
+  const [studyingDay, setStudyingDay] = useState<Date>(null);
+  const [studyingHour, setStudyingHour] = useState<number>(0);
+  const [usedLanguages, setUsedLanguages] = useState<Array<number>>([]);
+  const [usedTeachingMaterials, setUsedTeachingMaterials] = useState<
+    Array<number>
+  >([]);
+  const addOrRemove = (array, value: number, checked: boolean) => {
+    const newArray = [...array];
+    const index = array.indexOf(value);
+    checked ? newArray.push(value) : newArray.splice(index, 1);
+    return newArray;
+  };
+
+  const recordStudyingHour: MouseEventHandler = async () => {
+    if (!studyingDay) {
+      alert("日付を入力して下さい");
+      return;
+    }
+    if (studyingHour <= 0) {
+      alert("学習時間を入力して下さい");
+      return;
+    }
+    if (!usedTeachingMaterials.length) {
+      alert("学習コンテンツを1つ以上選択して下さい");
+      return;
+    }
+    if (!usedLanguages.length) {
+      alert("学習言語を1つ以上選択して下さい");
+      return;
+    }
+    const res = await axios.post("/api", {
+      studyingDay: studyingDay,
+      studyingHour: studyingHour,
+      languages: usedLanguages,
+      teachingMaterials: usedTeachingMaterials,
+    });
+  };
+
   return (
     <section className={isOpen ? "" : "hidden"}>
       <div
@@ -71,6 +105,7 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
             id='studying-day'
             name='studying-day'
             className='w-full bg-[#F5F5F8] h-10 px-5 mt-3'
+            onChange={(e) => setStudyingDay(new Date(e.target.value))}
           />
         </div>
         <div className='mt-6'>
@@ -81,9 +116,17 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
                 <label className='relative' key={teachingMaterial.id}>
                   <input
                     type='checkbox'
-                    name='teaching_materials[]'
                     value={teachingMaterial.id}
                     className='hidden peer'
+                    onChange={(e) =>
+                      setUsedTeachingMaterials((prev) => {
+                        return addOrRemove(
+                          prev,
+                          Number(e.target.value),
+                          e.target.checked
+                        );
+                      })
+                    }
                   />
                   <p className='peer-checked:bg-[#0f71bd] absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 leading-4 bg-[#cccccc] rounded-full text-center inline-block'>
                     <FontAwesomeIcon
@@ -107,9 +150,17 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
                 <label className='relative' key={language.id}>
                   <input
                     type='checkbox'
-                    name='teaching_materials[]'
                     value={language.id}
                     className='hidden peer'
+                    onChange={(e) =>
+                      setUsedLanguages((prev) => {
+                        return addOrRemove(
+                          prev,
+                          Number(e.target.value),
+                          e.target.checked
+                        );
+                      })
+                    }
                   />
                   <p className='peer-checked:bg-[#0f71bd] absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 leading-4 bg-[#cccccc] rounded-full text-center inline-block'>
                     <FontAwesomeIcon
@@ -134,6 +185,7 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
             id='studying-hour'
             name='studying-hour'
             className='w-full bg-[#F5F5F8] h-10 px-5 mt-3'
+            onChange={(e) => setStudyingHour(Number(e.target.value))}
           />
         </div>
         <div className='mt-6'>
@@ -155,7 +207,7 @@ const RecordModal: React.VFC<Props> = ({ isOpen, setIsOpen }) => {
             <p className='inline text-xs font-bold'>Twitterにシェアする</p>
           </label>
         </div>
-        <RecordButton onClick={record} />
+        <RecordButton onClick={recordStudyingHour} />
       </div>
     </section>
   );

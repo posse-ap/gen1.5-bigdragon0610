@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Language;
 use App\StudyingHour;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class StudyingHourController extends Controller
@@ -32,5 +33,25 @@ class StudyingHourController extends Controller
       'language' => StudyingHour::getStudyingHoursForEachLanguage(),
       'teaching_material' => StudyingHour::getStudyingHoursForEachTeachingMaterial(),
     ];
+  }
+
+  public function store(Request $request)
+  {
+    $data = [];
+    $languages = $request->languages;
+    $teaching_materials = $request->teachingMaterials;
+    $studying_hour = $request->studyingHour / count($languages) / count($teaching_materials);
+    foreach ($languages as $language) {
+      foreach ($teaching_materials as $teaching_material) {
+        $data[] = [
+          "studying_hour" => $studying_hour,
+          "studying_day" => new Carbon($request->studyingDay),
+          "language_id" => $language,
+          "teaching_material_id" => $teaching_material,
+        ];
+      }
+    }
+    StudyingHour::insert($data);
+    return response('stored studying_hours', 200);
   }
 }
