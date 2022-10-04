@@ -3,6 +3,7 @@
 namespace App;
 
 use Carbon\Carbon;
+use Faker\Core\Number;
 use Illuminate\Database\Eloquent\Model;
 
 class StudyingHour extends Model
@@ -36,7 +37,7 @@ class StudyingHour extends Model
     return self::whereDate('studying_day', Carbon::today())->sum('studying_hour');
   }
 
-  public static function getMonthlyStudyingHoursForEachDay($year, $month)
+  public static function getMonthlyStudyingHoursForEachDay(int $year, int $month)
   {
     $monthly_studying_hours_for_each_day = self::whereYear('studying_day', $year)
       ->whereMonth('studying_day', $month)

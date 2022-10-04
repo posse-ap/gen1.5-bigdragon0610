@@ -21,7 +21,7 @@ class StudyingHourController extends Controller
     ];
   }
 
-  public function bar_chart($year, $month)
+  public function bar_chart(int $year, int $month)
   {
     $monthly_studying_hours_for_each_day = StudyingHour::getMonthlyStudyingHoursForEachDay($year, $month);
     return $monthly_studying_hours_for_each_day;
