@@ -31,11 +31,13 @@ class StudyingHourController extends Controller
     return $monthly_studying_hours_for_each_day;
   }
 
-  public function doughnut_chart()
+  public function doughnut_chart(Request $request)
   {
+    $user_id = (string)$request->query('user_id');
+
     return [
-      'language' => StudyingHour::getStudyingHoursForEachLanguage(),
-      'teaching_material' => StudyingHour::getStudyingHoursForEachTeachingMaterial(),
+      'language' => StudyingHour::getStudyingHoursForEachLanguage($user_id),
+      'teaching_material' => StudyingHour::getStudyingHoursForEachTeachingMaterial($user_id),
     ];
   }
 

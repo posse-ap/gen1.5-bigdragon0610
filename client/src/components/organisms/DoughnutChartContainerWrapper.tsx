@@ -2,6 +2,8 @@ import React from "react";
 import axios from "@/libs/axios";
 import { useEffect, useState } from "react";
 import DoughnutChartContainer from "@/components/molecules/DoughnutChartContainer";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
 
 const DoughnutChartContainerWrapper: React.VFC = () => {
   const [languageData, setLanguageData] = useState([]);
@@ -9,7 +11,8 @@ const DoughnutChartContainerWrapper: React.VFC = () => {
   useEffect(() => {
     const newLanguageData = [];
     const newTeachingMaterialData = [];
-    const fetch = async () => {
+    onAuthStateChanged(auth, async (user) => {
+      const user_id = user.uid;
       try {
         const background_colors = [
           "#0445EC",
@@ -21,7 +24,7 @@ const DoughnutChartContainerWrapper: React.VFC = () => {
           "#4A17EF",
           "#3005C0",
         ];
-        const res = await axios.get("/api/doughnut_chart");
+        const res = await axios.get(`/api/doughnut_chart?user_id=${user_id}`);
         const language_res_data = res.data.language;
         const teaching_material_res_data = res.data.teaching_material;
         for (let i = 0; i < Object.keys(language_res_data).length; i++) {
@@ -47,11 +50,10 @@ const DoughnutChartContainerWrapper: React.VFC = () => {
       } catch (e) {
         console.error(e);
       }
-    };
-    fetch();
+    });
   }, []);
   return (
-    <div className="grid gap-x-5 grid-cols-2">
+    <div className='grid gap-x-5 grid-cols-2'>
       <DoughnutChartContainer
         title={"学習コンテンツ"}
         data={teachingMaterialData}

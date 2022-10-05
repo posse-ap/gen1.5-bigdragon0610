@@ -58,9 +58,10 @@ class StudyingHour extends Model
     return $monthly_studying_hours_for_each_day;
   }
 
-  public static function getStudyingHoursForEachLanguage()
+  public static function getStudyingHoursForEachLanguage(string $user_id)
   {
-    $studying_hours_for_each_language = self::get()
+    $studying_hours_for_each_language = self::where('user_id', $user_id)
+      ->get()
       ->groupBy(function ($row) {
         return $row->language_id;
       })
@@ -85,9 +86,10 @@ class StudyingHour extends Model
     return $studying_hours_for_each_language;
   }
 
-  public static function getStudyingHoursForEachTeachingMaterial()
+  public static function getStudyingHoursForEachTeachingMaterial(string $user_id)
   {
-    $studying_hours_for_each_teaching_material = self::get()
+    $studying_hours_for_each_teaching_material = self::where('user_id', $user_id)
+      ->get()
       ->groupBy(function ($row) {
         return $row->teaching_material_id;
       })
