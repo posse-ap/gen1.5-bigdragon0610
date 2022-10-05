@@ -1,7 +1,9 @@
+import { auth } from "@/firebase";
 import axios from "@/libs/axios";
 import { ErrorContext } from "@/pages";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { onAuthStateChanged } from "firebase/auth";
 import { Dispatch, MouseEventHandler, useContext, useState, VFC } from "react";
 import RecordButton from "../atoms/RecordButton";
 
@@ -41,7 +43,7 @@ const BeforeRecordModalContent: VFC<Props> = ({
     return newArray;
   };
 
-  const recordStudyingHour: MouseEventHandler = async () => {
+  const recordStudyingHour: MouseEventHandler = () => {
     if (!studyingDay) {
       alert("学習日を入力して下さい");
       return;
@@ -59,14 +61,18 @@ const BeforeRecordModalContent: VFC<Props> = ({
       return;
     }
     try {
-      setCurrentProgressStatus(progressStatuses[1]);
-      await axios.post("/api", {
-        studyingDay: studyingDay,
-        studyingHour: studyingHour,
-        languages: usedLanguages,
-        teachingMaterials: usedTeachingMaterials,
+      onAuthStateChanged(auth, async (user) => {
+        const user_id = user.uid;
+        setCurrentProgressStatus(progressStatuses[1]);
+        await axios.post(`/api`, {
+          userId: user_id,
+          studyingDay: studyingDay,
+          studyingHour: studyingHour,
+          languages: usedLanguages,
+          teachingMaterials: usedTeachingMaterials,
+        });
+        setCurrentProgressStatus(progressStatuses[2]);
       });
-      setCurrentProgressStatus(progressStatuses[2]);
     } catch (e) {
       setHasError(true);
       console.log(e);

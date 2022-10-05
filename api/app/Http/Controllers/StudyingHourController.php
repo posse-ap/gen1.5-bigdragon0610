@@ -45,12 +45,14 @@ class StudyingHourController extends Controller
   public function store(Request $request)
   {
     $data = [];
+    $user_id = $request->userId;
     $languages = $request->languages;
     $teaching_materials = $request->teachingMaterials;
     $studying_hour = $request->studyingHour / count($languages) / count($teaching_materials);
     foreach ($languages as $language) {
       foreach ($teaching_materials as $teaching_material) {
         $data[] = [
+          "user_id" => $user_id,
           "studying_hour" => $studying_hour,
           "studying_day" => new Carbon($request->studyingDay),
           "language_id" => $language,
