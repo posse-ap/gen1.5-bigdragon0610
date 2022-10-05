@@ -9,11 +9,12 @@ use Illuminate\Http\Request;
 
 class StudyingHourController extends Controller
 {
-  public function index()
+  public function index(Request $request)
   {
-    $total_studying_hours = StudyingHour::getTotalStudyingHours();
-    $monthly_studying_hours = StudyingHour::getMonthlyStudyingHours();
-    $daily_studying_hours = StudyingHour::getDailyStudyingHours();
+    $user_id = (string)$request->query('user_id');
+    $total_studying_hours = StudyingHour::getTotalStudyingHours($user_id);
+    $monthly_studying_hours = StudyingHour::getMonthlyStudyingHours($user_id);
+    $daily_studying_hours = StudyingHour::getDailyStudyingHours($user_id);
     return [
       'total_studying_hours' => $total_studying_hours,
       'monthly_studying_hours' => $monthly_studying_hours,

@@ -2,6 +2,8 @@ import React from "react";
 import TotalLearningTime from "@/components/atoms/TotalLearningTime";
 import axios from "@/libs/axios";
 import { useEffect, useState } from "react";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
 
 const LearningTimeWrapper: React.VFC = () => {
   const [daily_studying_hours, setDailyStudyingHours] = useState();
@@ -9,17 +11,17 @@ const LearningTimeWrapper: React.VFC = () => {
   const [total_studying_hours, setTotalStudyingHours] = useState();
 
   useEffect(() => {
-    const fetch = async () => {
+    onAuthStateChanged(auth, async (user) => {
+      const user_id = user.uid;
       try {
-        const res = await axios.get("/api");
+        const res = await axios.get(`/api?user_id=${user_id}`);
         setDailyStudyingHours(res.data["daily_studying_hours"]);
         setMonthlyStudyingHours(res.data["monthly_studying_hours"]);
         setTotalStudyingHours(res.data["total_studying_hours"]);
       } catch (e) {
         console.error(e);
       }
-    };
-    fetch();
+    });
   }, []);
 
   return (

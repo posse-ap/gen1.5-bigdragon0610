@@ -22,19 +22,19 @@ class StudyingHour extends Model
     return $this->belongsTo('App\TeachingMaterial', 'teaching_material_id');
   }
 
-  public static function getTotalStudyingHours()
+  public static function getTotalStudyingHours(string $user_id)
   {
-    return self::sum('studying_hour');
+    return self::where('user_id', $user_id)->sum('studying_hour');
   }
 
-  public static function getMonthlyStudyingHours()
+  public static function getMonthlyStudyingHours(string $user_id)
   {
-    return self::whereYear('studying_day', Carbon::today())->whereMonth('studying_day', Carbon::today())->sum('studying_hour');
+    return self::where('user_id', $user_id)->whereYear('studying_day', Carbon::today())->whereMonth('studying_day', Carbon::today())->sum('studying_hour');
   }
 
-  public static function getDailyStudyingHours()
+  public static function getDailyStudyingHours(string $user_id)
   {
-    return self::whereDate('studying_day', Carbon::today())->sum('studying_hour');
+    return self::where('user_id', $user_id)->whereDate('studying_day', Carbon::today())->sum('studying_hour');
   }
 
   public static function getMonthlyStudyingHoursForEachDay(int $year, int $month, string $user_id)
