@@ -11,6 +11,8 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import { DateContext } from "@/pages";
+import { onAuthStateChanged } from "firebase/auth";
+import { auth } from "@/firebase";
 
 ChartJS.register(
   CategoryScale,
@@ -92,55 +94,59 @@ const BarChart = () => {
   const { date } = useContext(DateContext);
 
   useEffect(() => {
-    const fetch = async () => {
-      try {
-        const studyHours = [];
-        const currentDate = date;
-        const year = currentDate.getFullYear();
-        const month = currentDate.getMonth() + 1;
-        const res = await axios.get(`/api/bar_chart/${year}/${month}`);
-        for (let i = 0; i < Object.keys(res.data).length; i++) {
-          studyHours[i] = res.data[i + 1];
+    try {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const user_id = user.uid;
+          const studyHours = [];
+          const currentDate = date;
+          const year = currentDate.getFullYear();
+          const month = currentDate.getMonth() + 1;
+          const res = await axios.get(
+            `/api/bar_chart?year=${year}&month=${month}&user_id=${user_id}`
+          );
+          for (let i = 0; i < Object.keys(res.data).length; i++) {
+            studyHours[i] = res.data[i + 1];
+          }
+
+          const maxStudyHour = Math.max(...studyHours);
+          const labels = studyHours.map(() => "");
+
+          const newData = {
+            labels,
+            datasets: [
+              {
+                data: studyHours,
+                borderRadius: 10,
+                borderSkipped: false,
+              },
+            ],
+          };
+          const chart = chartRef.current;
+          if (!chart) {
+            return;
+          }
+          const chartData = {
+            ...newData,
+            datasets: newData.datasets.map((dataset) => ({
+              ...dataset,
+              backgroundColor: function (context) {
+                return createGradient(
+                  chart.ctx,
+                  chart.chartArea,
+                  context.parsed.y,
+                  maxStudyHour
+                );
+              },
+            })),
+          };
+
+          setChartData(chartData);
         }
-
-        const maxStudyHour = Math.max(...studyHours);
-        const labels = studyHours.map(() => "");
-
-        const newData = {
-          labels,
-          datasets: [
-            {
-              data: studyHours,
-              borderRadius: 10,
-              borderSkipped: false,
-            },
-          ],
-        };
-        const chart = chartRef.current;
-        if (!chart) {
-          return;
-        }
-        const chartData = {
-          ...newData,
-          datasets: newData.datasets.map((dataset) => ({
-            ...dataset,
-            backgroundColor: function (context) {
-              return createGradient(
-                chart.ctx,
-                chart.chartArea,
-                context.parsed.y,
-                maxStudyHour
-              );
-            },
-          })),
-        };
-
-        setChartData(chartData);
-      } catch (e) {
-        console.error(e);
-      }
-    };
-    fetch();
+      });
+    } catch (e) {
+      console.error(e);
+    }
   }, [date]);
 
   return (

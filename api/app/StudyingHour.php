@@ -37,9 +37,10 @@ class StudyingHour extends Model
     return self::whereDate('studying_day', Carbon::today())->sum('studying_hour');
   }
 
-  public static function getMonthlyStudyingHoursForEachDay(int $year, int $month)
+  public static function getMonthlyStudyingHoursForEachDay(int $year, int $month, string $user_id)
   {
-    $monthly_studying_hours_for_each_day = self::whereYear('studying_day', $year)
+    $monthly_studying_hours_for_each_day = self::where('user_id', $user_id)
+      ->whereYear('studying_day', $year)
       ->whereMonth('studying_day', $month)
       ->get()
       ->groupBy(function ($row) {
