@@ -13,18 +13,19 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
   return $request->user();
 });
 
-Route::get('/hello', function () {
-  return json_encode(['name' => '山田太郎', 'gender' => '男', 'mail' => 'yamada@test.com']);
+Route::middleware(['auth:sanctum'])->group(function () {
+  Route::get('/', 'StudyingHourController@index');
+  Route::post('/', 'StudyingHourController@store');
+  Route::get('/bar_chart', 'StudyingHourController@bar_chart');
+  Route::get('/doughnut_chart', 'StudyingHourController@doughnut_chart');
+  Route::get('/language', 'LanguageController@index');
+  Route::get('/teaching_material', 'TeachingMaterialController@index');
 });
 
-Route::get('/', 'StudyingHourController@index');
-Route::post('/', 'StudyingHourController@store');
-Route::get('/bar_chart', 'StudyingHourController@bar_chart');
-Route::get('/doughnut_chart', 'StudyingHourController@doughnut_chart');
 
-Route::get('/language', 'LanguageController@index');
-Route::get('/teaching_material', 'TeachingMaterialController@index');
+Route::post('/register', 'Api\Auth\RegisterController@register');
+Route::post('/login', 'Api\Auth\LoginController@login');

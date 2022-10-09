@@ -14,7 +14,7 @@ class AddUserIdToStudyingHours extends Migration
   public function up()
   {
     Schema::table('studying_hours', function (Blueprint $table) {
-      $table->string("user_id");
+      $table->integer("user_id");
     });
   }
 

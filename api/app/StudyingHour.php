@@ -3,7 +3,6 @@
 namespace App;
 
 use Carbon\Carbon;
-use Faker\Core\Number;
 use Illuminate\Database\Eloquent\Model;
 
 class StudyingHour extends Model
@@ -22,22 +21,22 @@ class StudyingHour extends Model
     return $this->belongsTo('App\TeachingMaterial', 'teaching_material_id');
   }
 
-  public static function getTotalStudyingHours(string $user_id)
+  public static function getTotalStudyingHours(int $user_id)
   {
     return self::where('user_id', $user_id)->sum('studying_hour');
   }
 
-  public static function getMonthlyStudyingHours(string $user_id)
+  public static function getMonthlyStudyingHours(int $user_id)
   {
     return self::where('user_id', $user_id)->whereYear('studying_day', Carbon::today())->whereMonth('studying_day', Carbon::today())->sum('studying_hour');
   }
 
-  public static function getDailyStudyingHours(string $user_id)
+  public static function getDailyStudyingHours(int $user_id)
   {
     return self::where('user_id', $user_id)->whereDate('studying_day', Carbon::today())->sum('studying_hour');
   }
 
-  public static function getMonthlyStudyingHoursForEachDay(int $year, int $month, string $user_id)
+  public static function getMonthlyStudyingHoursForEachDay(int $year, int $month, int $user_id)
   {
     $monthly_studying_hours_for_each_day = self::where('user_id', $user_id)
       ->whereYear('studying_day', $year)
@@ -58,7 +57,7 @@ class StudyingHour extends Model
     return $monthly_studying_hours_for_each_day;
   }
 
-  public static function getStudyingHoursForEachLanguage(string $user_id)
+  public static function getStudyingHoursForEachLanguage(int $user_id)
   {
     $studying_hours_for_each_language = self::where('user_id', $user_id)
       ->get()
@@ -86,7 +85,7 @@ class StudyingHour extends Model
     return $studying_hours_for_each_language;
   }
 
-  public static function getStudyingHoursForEachTeachingMaterial(string $user_id)
+  public static function getStudyingHoursForEachTeachingMaterial(int $user_id)
   {
     $studying_hours_for_each_teaching_material = self::where('user_id', $user_id)
       ->get()

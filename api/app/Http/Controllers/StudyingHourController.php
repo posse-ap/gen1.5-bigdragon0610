@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Language;
 use App\StudyingHour;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudyingHourController extends Controller
 {
-  public function index(Request $request)
+  public function index()
   {
-    $user_id = (string)$request->query('user_id');
+    $user_id = Auth::id();
     $total_studying_hours = StudyingHour::getTotalStudyingHours($user_id);
     $monthly_studying_hours = StudyingHour::getMonthlyStudyingHours($user_id);
     $daily_studying_hours = StudyingHour::getDailyStudyingHours($user_id);
@@ -26,15 +26,15 @@ class StudyingHourController extends Controller
   {
     $year = (int)$request->query('year');
     $month = (int)$request->query('month');
-    $user_id = (string)$request->query('user_id');
+    $user_id = Auth::id();
 
     $monthly_studying_hours_for_each_day = StudyingHour::getMonthlyStudyingHoursForEachDay($year, $month, $user_id);
     return $monthly_studying_hours_for_each_day;
   }
 
-  public function doughnut_chart(Request $request)
+  public function doughnut_chart()
   {
-    $user_id = (string)$request->query('user_id');
+    $user_id = Auth::id();
 
     return [
       'language' => StudyingHour::getStudyingHoursForEachLanguage($user_id),
@@ -45,7 +45,7 @@ class StudyingHourController extends Controller
   public function store(Request $request)
   {
     $data = [];
-    $user_id = $request->userId;
+    $user_id = Auth::id();
     $languages = $request->languages;
     $teaching_materials = $request->teachingMaterials;
     $studying_hour = $request->studyingHour / count($languages) / count($teaching_materials);

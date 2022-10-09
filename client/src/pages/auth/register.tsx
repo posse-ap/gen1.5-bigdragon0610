@@ -1,31 +1,37 @@
 import { VFC } from "react";
-import { auth } from "@/firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
 import Link from "next/link";
 import Router from "next/router";
+import axios from "@/libs/axios";
 
 const Register: VFC = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { email, password } = e.target.elements;
+    const { name, email, password, password_confirmation } = e.target.elements;
+    if (password.value !== password_confirmation.value) {
+      alert("パスワードが一致していません");
+      return;
+    }
     try {
-      await createUserWithEmailAndPassword(auth, email.value, password.value);
-      Router.push("/");
-    } catch (error) {
-      if (error.code === "auth/invalid-email") {
-        alert("メールアドレスを確認して下さい");
-      } else if (error.code === "auth/weak-password") {
-        alert("パスワードは6文字以上で設定して下さい");
-      } else if (error.code === "auth/email-already-in-use") {
-        alert("このメールアドレスは既に登録されています");
+      await axios.get("/sanctum/csrf-cookie");
+      const res = await axios.post("/api/register", {
+        name: name.value,
+        email: email.value,
+        password: password.value,
+        password_confirmation: password_confirmation.value,
+      });
+      if (res.data.success) {
+        Router.push("/");
       } else {
-        alert("登録に失敗しました");
+        alert(res.data.message);
       }
+    } catch (error) {
+      alert("登録に失敗しました");
     }
   };
   return (
     <section>
       <form onSubmit={handleSubmit}>
+        <input type='text' name='name' placeholder='名前' required />
         <input
           type='email'
           name='email'
@@ -35,8 +41,15 @@ const Register: VFC = () => {
         <input
           type='password'
           name='password'
-          minLength={6}
+          minLength={8}
           placeholder='パスワード'
+          required
+        />
+        <input
+          type='password'
+          name='password_confirmation'
+          minLength={8}
+          placeholder='パスワード確認'
           required
         />
         <button type='submit'>登録</button>

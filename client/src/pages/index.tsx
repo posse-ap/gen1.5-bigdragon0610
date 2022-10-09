@@ -14,16 +14,6 @@ import {
   useState,
 } from "react";
 import RecordModal from "@/components/organisms/RecordModal";
-import { onAuthStateChanged } from "firebase/auth";
-import { auth } from "@/firebase";
-import Router from "next/router";
-
-onAuthStateChanged(auth, (user) => {
-  if (!user) {
-    alert("ログインして下さい");
-    Router.push("/auth/login");
-  }
-});
 
 type dateContextDefaultValue = {
   date: Date;
