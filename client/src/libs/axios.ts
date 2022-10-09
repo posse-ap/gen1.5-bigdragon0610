@@ -12,9 +12,11 @@ const axios = Axios.create({
 axios.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401 || 419) {
+    if (error.response?.status === (401 || 419)) {
       Router.push("/auth/login");
       throw "login is needed";
+    } else {
+      throw { success: false, message: error.message };
     }
   }
 );

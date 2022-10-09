@@ -58,8 +58,8 @@ const BeforeRecordModalContent: VFC<Props> = ({
       alert("学習言語を1つ以上選択して下さい");
       return;
     }
-    try {
-      const fetch = async () => {
+    const fetch = async () => {
+      try {
         setCurrentProgressStatus(progressStatuses[1]);
         await axios.post(`/api`, {
           studyingDay: studyingDay,
@@ -68,12 +68,12 @@ const BeforeRecordModalContent: VFC<Props> = ({
           teachingMaterials: usedTeachingMaterials,
         });
         setCurrentProgressStatus(progressStatuses[2]);
-      };
-      fetch();
-    } catch (e) {
-      setHasError(true);
-      console.log(e);
-    }
+      } catch (e) {
+        setHasError(true);
+        console.log(e);
+      }
+    };
+    fetch();
   };
 
   return (
