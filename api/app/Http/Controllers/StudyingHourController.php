@@ -2,17 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Language;
 use App\StudyingHour;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class StudyingHourController extends Controller
 {
   public function index()
   {
-    $total_studying_hours = StudyingHour::getTotalStudyingHours();
-    $monthly_studying_hours = StudyingHour::getMonthlyStudyingHours();
-    $daily_studying_hours = StudyingHour::getDailyStudyingHours();
+    $user_id = Auth::id();
+    $total_studying_hours = StudyingHour::getTotalStudyingHours($user_id);
+    $monthly_studying_hours = StudyingHour::getMonthlyStudyingHours($user_id);
+    $daily_studying_hours = StudyingHour::getDailyStudyingHours($user_id);
     return [
       'total_studying_hours' => $total_studying_hours,
       'monthly_studying_hours' => $monthly_studying_hours,
@@ -20,17 +22,45 @@ class StudyingHourController extends Controller
     ];
   }
 
-  public function bar_chart()
+  public function bar_chart(Request $request)
   {
-    $monthly_studying_hours_for_each_day = StudyingHour::getMonthlyStudyingHoursForEachDay();
+    $year = (int)$request->query('year');
+    $month = (int)$request->query('month');
+    $user_id = Auth::id();
+
+    $monthly_studying_hours_for_each_day = StudyingHour::getMonthlyStudyingHoursForEachDay($year, $month, $user_id);
     return $monthly_studying_hours_for_each_day;
   }
 
   public function doughnut_chart()
   {
+    $user_id = Auth::id();
+
     return [
-      'language' => StudyingHour::getStudyingHoursForEachLanguage(),
-      'teaching_material' => StudyingHour::getStudyingHoursForEachTeachingMaterial(),
+      'language' => StudyingHour::getStudyingHoursForEachLanguage($user_id),
+      'teaching_material' => StudyingHour::getStudyingHoursForEachTeachingMaterial($user_id),
     ];
+  }
+
+  public function store(Request $request)
+  {
+    $data = [];
+    $user_id = Auth::id();
+    $languages = $request->languages;
+    $teaching_materials = $request->teachingMaterials;
+    $studying_hour = $request->studyingHour / count($languages) / count($teaching_materials);
+    foreach ($languages as $language) {
+      foreach ($teaching_materials as $teaching_material) {
+        $data[] = [
+          "user_id" => $user_id,
+          "studying_hour" => $studying_hour,
+          "studying_day" => new Carbon($request->studyingDay),
+          "language_id" => $language,
+          "teaching_material_id" => $teaching_material,
+        ];
+      }
+    }
+    StudyingHour::insert($data);
+    return response('stored studying_hours', 200);
   }
 }

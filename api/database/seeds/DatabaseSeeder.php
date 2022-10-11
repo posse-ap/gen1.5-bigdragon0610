@@ -12,7 +12,6 @@ class DatabaseSeeder extends Seeder
   public function run()
   {
     $this->call([
-      StudyingHoursTableSeeder::class,
       LanguagesTableSeeder::class,
       TeachingMaterialsTableSeeder::class,
     ]);

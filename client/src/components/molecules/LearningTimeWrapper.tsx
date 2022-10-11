@@ -11,8 +11,7 @@ const LearningTimeWrapper: React.VFC = () => {
   useEffect(() => {
     const fetch = async () => {
       try {
-        const res = await axios.get("/api");
-        console.log(res.data);
+        const res = await axios.get(`/api`);
         setDailyStudyingHours(res.data["daily_studying_hours"]);
         setMonthlyStudyingHours(res.data["monthly_studying_hours"]);
         setTotalStudyingHours(res.data["total_studying_hours"]);
@@ -24,7 +23,7 @@ const LearningTimeWrapper: React.VFC = () => {
   }, []);
 
   return (
-    <div className="grid gap-x-5 grid-cols-3 py-5">
+    <div className='grid gap-x-5 grid-cols-3 py-5'>
       <TotalLearningTime term={"Today"} learningTime={daily_studying_hours} />
       <TotalLearningTime term={"Month"} learningTime={monthly_studying_hours} />
       <TotalLearningTime term={"Total"} learningTime={total_studying_hours} />

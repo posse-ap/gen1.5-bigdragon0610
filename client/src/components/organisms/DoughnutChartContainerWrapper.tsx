@@ -21,7 +21,7 @@ const DoughnutChartContainerWrapper: React.VFC = () => {
           "#4A17EF",
           "#3005C0",
         ];
-        const res = await axios.get("/api/doughnut_chart");
+        const res = await axios.get(`/api/doughnut_chart`);
         const language_res_data = res.data.language;
         const teaching_material_res_data = res.data.teaching_material;
         for (let i = 0; i < Object.keys(language_res_data).length; i++) {
@@ -51,7 +51,7 @@ const DoughnutChartContainerWrapper: React.VFC = () => {
     fetch();
   }, []);
   return (
-    <div className="grid gap-x-5 grid-cols-2">
+    <div className='grid gap-x-5 grid-cols-2'>
       <DoughnutChartContainer
         title={"学習コンテンツ"}
         data={teachingMaterialData}
