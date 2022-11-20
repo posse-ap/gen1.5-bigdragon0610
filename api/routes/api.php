@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\Resource;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,6 +25,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
   Route::get('/doughnut_chart', 'StudyingHourController@doughnut_chart');
   Route::get('/language', 'LanguageController@index');
   Route::get('/teaching_material', 'TeachingMaterialController@index');
+});
+Route::prefix('admin')->group(function () {
+  Route::resource('language', 'Admin\LanguageController')->only(['index', 'store', 'update', 'destroy']);
+  Route::resource('teaching_material', 'Admin\TeachingMaterialController')->only(['index', 'store', 'update', 'destroy']);
 });
 
 
