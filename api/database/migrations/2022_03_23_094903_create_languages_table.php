@@ -17,6 +17,7 @@ class CreateLanguagesTable extends Migration
       $table->bigIncrements('id');
       $table->text('name');
       $table->timestamps();
+      $table->softDeletes();
     });
   }
 
