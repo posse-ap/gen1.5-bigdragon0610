@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import Form from "@/components/admin/Form";
 import { useEffect, useState, VFC } from "react";
+import axios from "@/libs/axios";
 
 const Admin: VFC = () => {
   type data = {
@@ -12,50 +13,14 @@ const Admin: VFC = () => {
   const [contents, setContents] = useState<Array<data>>([]);
   const [languages, setLanguages] = useState<Array<data>>([]);
 
-  const defaultContents: Array<data> = [
-    {
-      id: 1,
-      name: "ドットインストール",
-      deleted_at: null,
-    },
-    {
-      id: 2,
-      name: "N予備校",
-      deleted_at: null,
-    },
-    {
-      id: 3,
-      name: "POSSE課題",
-      deleted_at: null,
-    },
-  ];
-
-  const defaultLanguages: Array<data> = [
-    {
-      id: 1,
-      name: "JavaScript",
-      deleted_at: null,
-    },
-    {
-      id: 2,
-      name: "CSS",
-      deleted_at: null,
-    },
-    {
-      id: 3,
-      name: "PHP",
-      deleted_at: null,
-    },
-    {
-      id: 4,
-      name: "HTML",
-      deleted_at: null,
-    },
-  ];
-
   useEffect(() => {
-    setContents(defaultContents);
-    setLanguages(defaultLanguages);
+    const fetch = async () => {
+      const languages_res = await axios.get("/api/admin/language");
+      setLanguages(languages_res.data);
+      const contents_res = await axios.get("/api/admin/teaching_material");
+      setContents(contents_res.data);
+    };
+    fetch();
   }, []);
 
   const addForm = (data: Array<data>, setData: Function) => {
