@@ -1,29 +1,28 @@
+import axios from "@/libs/axios";
 import Image from "next/image";
 import { useState, VFC } from "react";
 
 type Props = {
   id: number;
   name: string;
+  path: string;
   setData: Function;
 };
 
-const Form: VFC<Props> = ({ id, name, setData }) => {
+const Form: VFC<Props> = ({ id, name, path, setData }) => {
   const [canEdit, setCanEdit] = useState<boolean>(false);
 
   type data = {
     id: number;
     name: string;
-    deleted_at: Date | null;
   };
 
   const deleteData = () => {
     if (!confirm(`${name}を削除しますか？`)) return;
     setData((prev: Array<data>) => {
-      return prev.map((data) => {
-        if (data.id === id) data.deleted_at = new Date();
-        return data;
-      });
+      return prev.filter((data) => data.id !== id);
     });
+    axios.delete(`${path}/${id}`);
   };
 
   const [newName, setNewName] = useState<string>(name);
@@ -34,6 +33,9 @@ const Form: VFC<Props> = ({ id, name, setData }) => {
         if (data.id === id) data.name = newName;
         return data;
       });
+    });
+    axios.put(`${path}/${id}`, {
+      name: newName,
     });
     setCanEdit(false);
   };

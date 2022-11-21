@@ -29,6 +29,7 @@ class TeachingMaterialController extends Controller
     $teaching_material = new TeachingMaterial();
     $teaching_material->name = $request->name;
     $teaching_material->save();
+    return $teaching_material->id;
   }
 
   /**

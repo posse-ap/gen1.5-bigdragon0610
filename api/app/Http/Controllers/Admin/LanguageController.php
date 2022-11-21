@@ -29,6 +29,7 @@ class LanguageController extends Controller
     $language = new Language();
     $language->name = $request->name;
     $language->save();
+    return $language->id;
   }
 
   /**

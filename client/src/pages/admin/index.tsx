@@ -8,28 +8,41 @@ const Admin: VFC = () => {
   type data = {
     id: number;
     name: string;
-    deleted_at: Date | null;
   };
   const [contents, setContents] = useState<Array<data>>([]);
   const [languages, setLanguages] = useState<Array<data>>([]);
 
+  const DATASET = {
+    language: {
+      path: "/api/admin/language",
+      setData: setLanguages,
+    },
+    content: {
+      path: "/api/admin/teaching_material",
+      setData: setContents,
+    },
+  };
+
   useEffect(() => {
     const fetch = async () => {
-      const languages_res = await axios.get("/api/admin/language");
-      setLanguages(languages_res.data);
-      const contents_res = await axios.get("/api/admin/teaching_material");
-      setContents(contents_res.data);
+      Object.values(DATASET).forEach(async (d) => {
+        const res = await axios.get(d.path);
+        d.setData(res.data);
+      });
     };
     fetch();
   }, []);
 
-  const addForm = (data: Array<data>, setData: Function) => {
-    setData((prev: Array<data>) => [
+  const addData = async (d: string) => {
+    const name = prompt("名前を入力して下さい");
+    const res = await axios.post(DATASET[d].path, {
+      name,
+    });
+    DATASET[d].setData((prev: Array<data>) => [
       ...prev,
       {
-        id: data.length + 1,
-        name: "",
-        deleted_at: null,
+        id: res.data,
+        name,
       },
     ]);
   };
@@ -45,11 +58,11 @@ const Admin: VFC = () => {
           <p className='font-bold text-lg'>学習コンテンツ</p>
           <ul className='mt-2 flex flex-col gap-2'>
             {contents.map((content) => {
-              if (content.deleted_at) return;
               return (
                 <Form
                   id={content.id}
                   name={content.name}
+                  path={DATASET["content"].path}
                   setData={setContents}
                 />
               );
@@ -57,7 +70,7 @@ const Admin: VFC = () => {
           </ul>
           <button
             className='flex gap-1 items-center mt-2'
-            onClick={() => addForm(contents, setContents)}
+            onClick={() => addData("content")}
           >
             <Image src='/images/add.svg' width='20' height='20' />
             <span>追加</span>
@@ -67,11 +80,11 @@ const Admin: VFC = () => {
           <p className='font-bold text-lg'>学習言語</p>
           <ul className='mt-2 flex flex-col gap-2'>
             {languages.map((language) => {
-              if (language.deleted_at) return;
               return (
                 <Form
                   id={language.id}
                   name={language.name}
+                  path={DATASET["language"].path}
                   setData={setLanguages}
                 />
               );
@@ -79,7 +92,7 @@ const Admin: VFC = () => {
           </ul>
           <button
             className='flex gap-1 items-center mt-2'
-            onClick={() => addForm(languages, setLanguages)}
+            onClick={() => addData("language")}
           >
             <Image src='/images/add.svg' width='20' height='20' />
             <span>追加</span>
