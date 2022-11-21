@@ -13,11 +13,10 @@ type Data = {
 };
 
 const DoughnutChartContainer: React.VFC<Props> = ({ title, data }) => {
-  const labels = data.map((datum) => datum.label);
-
+  data = data.filter((datum) => datum.studyingHours > 0);
   return (
-    <div className="bg-white rounded-xl shadow-md mt-5">
-      <p className="font-bold ml-5 mt-5 pb-3">{title}</p>
+    <div className='bg-white rounded-xl shadow-md mt-5'>
+      <p className='font-bold ml-5 mt-5 pb-3'>{title}</p>
       <DoughnutChart data={data} />
       <div>
         <style>
@@ -28,9 +27,9 @@ const DoughnutChartContainer: React.VFC<Props> = ({ title, data }) => {
               }`
           )}
         </style>
-        <section className="flex flex-wrap p-2 gap-x-2">
+        <section className='flex flex-wrap p-2 gap-x-2'>
           {data.map((datum, index) => (
-            <p key={datum.label} className="text-xs text-[#686868]">
+            <p key={datum.label} className='text-xs text-[#686868]'>
               <span
                 className={`w-2 h-2 block mr-1 rounded-full bg-label${index} inline-block`}
               ></span>

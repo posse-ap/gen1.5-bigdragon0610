@@ -28,7 +28,7 @@ const DoughnutChartContainerWrapper: React.VFC = () => {
           newLanguageData[i] = {
             label: language_res_data[i + 1]["label"],
             studyingHours: language_res_data[i + 1]["studyingHours"],
-            backgroundColor: background_colors[i],
+            backgroundColor: background_colors[i % background_colors.length],
           };
         }
         for (
@@ -39,7 +39,7 @@ const DoughnutChartContainerWrapper: React.VFC = () => {
           newTeachingMaterialData[i] = {
             label: teaching_material_res_data[i + 1]["label"],
             studyingHours: teaching_material_res_data[i + 1]["studyingHours"],
-            backgroundColor: background_colors[i],
+            backgroundColor: background_colors[i % background_colors.length],
           };
         }
         setLanguageData(newLanguageData);

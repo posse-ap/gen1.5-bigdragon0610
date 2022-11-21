@@ -67,7 +67,7 @@ class StudyingHour extends Model
       ->map(function ($language) {
         return $language->sum('studying_hour');
       });
-    $languages = Language::get();
+    $languages = Language::withTrashed()->get();
     foreach ($languages as $key => $language) {
       $id = $key + 1;
       if (isset($studying_hours_for_each_language[$id])) {
@@ -95,7 +95,7 @@ class StudyingHour extends Model
       ->map(function ($teaching_material) {
         return $teaching_material->sum('studying_hour');
       });
-    $teaching_materials = TeachingMaterial::get();
+    $teaching_materials = TeachingMaterial::withTrashed()->get();
     foreach ($teaching_materials as $key => $teaching_material) {
       $id = $key + 1;
       if (isset($studying_hours_for_each_teaching_material[$id])) {
